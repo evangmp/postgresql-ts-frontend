@@ -7,9 +7,10 @@ const Connection = () => {
 
     // initialize the body to create the username/password variables
     const initialAccountState = {
-        id: 1111,
         username: "",
         password: "",
+        email: "",
+        role: [],
     };
 
     const [account, setAccount] = useState<IAccountData>(initialAccountState);
