@@ -5,6 +5,8 @@ import IAccountData from "../../types/Account.tsx";
 import SecurityService from "../../services/SecurityService.tsx";
 
 const Connection = () => {
+    const [link, setLink] = useState<string>("/tasks");
+    const [message, setMessage] = useState<boolean>(false);
 
     // initialize the body to create the username/password variables
     const initialAccountState = {
@@ -29,21 +31,23 @@ const Connection = () => {
             const data = {
                 username: account.username,
                 password: account.password,
-                email: account.email,
-                role: [],
             };
             SecurityService.signIn(data)
                 .then((response: any) => {
                     setAccount({
                         username: response.data.username,
                         password: response.data.password,
-                        email: response.data.email,
-                        role: response.data.role,
+                        email: account.email,
+                        role: account.role,
                     });
                     console.log(response.data);
+
                 })
                 .catch((e: Error) => {
+                    setLink("/connection");
                     console.log(e);
+                    setMessage(true);
+
                 });
         }
     };
@@ -51,7 +55,7 @@ const Connection = () => {
     return(
         <div>
             <div>
-                Connection Part
+                Connection Part {message ? " : error, retry please" : ""}
             </div>
 
             <div>
@@ -66,22 +70,6 @@ const Connection = () => {
                         value={account.username}
                         onChange={handleInputChange}
                         name="username"
-                    />
-                </div>
-            </div>
-
-            <div>
-                <div className="form-group">
-                    <label htmlFor="email">Enter email : </label>
-                    <input
-                        style={CSSConstants.inputGeneralSettings}
-                        type="text"
-                        className="form-control"
-                        id="email"
-                        required
-                        value={account.email}
-                        onChange={handleInputChange}
-                        name="email"
                     />
                 </div>
             </div>
@@ -108,7 +96,7 @@ const Connection = () => {
                 </Link>
             </button>
             <button>
-                <Link to={"/tasks"} onClick={signInUser}>
+                <Link to={link} onClick={signInUser}>
                     submit
                 </Link>
             </button>

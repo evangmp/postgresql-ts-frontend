@@ -5,6 +5,8 @@ import {Link} from "react-router-dom";
 import SecurityService from "../../services/SecurityService.tsx";
 
 const CreateAccount = () => {
+    const [link, setLink] = useState<string>("/connection");
+    const [message, setMessage] = useState<boolean>(false);
 
     // initialize the body to create the username/password variables
     const initialAccountState = {
@@ -29,7 +31,7 @@ const CreateAccount = () => {
                 username: account.username,
                 password: account.password,
                 email: account.email,
-                role: [],
+                role: ["mod", "user"],
             };
             SecurityService.signUp(data)
                 .then((response: any) => {
@@ -42,6 +44,8 @@ const CreateAccount = () => {
                     console.log(response.data);
                 })
                 .catch((e: Error) => {
+                    setLink("/connection/create"); // not working
+                    setMessage(true);
                     console.log(e);
                 });
         }
@@ -50,7 +54,7 @@ const CreateAccount = () => {
     return (
         <div>
             <div>
-                Create an account :
+                Create an account : {message ? ": error, retry please (email format?)" : ""}
             </div>
 
             <div>
@@ -113,7 +117,7 @@ const CreateAccount = () => {
                     </Link>
                 </button>
                 <button>
-                    <Link to={"/connection"} onClick={saveAccount}>
+                    <Link to={link} onClick={saveAccount}>
                         submit
                     </Link>
                 </button>
