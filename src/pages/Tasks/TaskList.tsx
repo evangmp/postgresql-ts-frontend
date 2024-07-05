@@ -3,7 +3,7 @@ import ITaskData from "../../types/Task.tsx";
 import TaskDataService from "../../services/TaskService.tsx";
 import CSSConstants from "../../components/CSSConstant.tsx";
 import {Link} from "react-router-dom";
-import DateIdea from "../Date/DateAlgo.tsx";
+import DateFunction from "../Date/DateFunction.tsx";
 
 const TaskList = () => {
 
@@ -59,7 +59,7 @@ const TaskList = () => {
     const hiddenOrNo = (task: ITaskData) => {
         // will call another const, this one will compare the date of the task and the actual date,
         // to render if the task will be print or no with a boolean
-        const printOrNo = DateIdea(task, date);
+        const printOrNo = DateFunction.DateIdea(task, date);
         console.log("Task : " + task.name + ", is good or no : " + printOrNo);
         return printOrNo
     }
