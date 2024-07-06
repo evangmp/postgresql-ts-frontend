@@ -66,6 +66,9 @@ const Connection = () => {
                 </Link>
             </button>
             <button>
+                submit
+            </button>
+            <button>
                 <Link to={"/connection/create"}>
                     Create an account
                 </Link>
