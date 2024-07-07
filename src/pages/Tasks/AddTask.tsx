@@ -1,96 +1,67 @@
-import React, {ChangeEvent, useState} from "react";
-import ITaskData from "../../types/Task.tsx";
+import React, {useState} from "react";
+import {ITaskData, Discipline} from "../../types/Task.ts";
 import TaskDataService from "../../services/TaskService.tsx";
 import CSSConstants from "../../components/CSSConstant.tsx";
 import {Link} from "react-router-dom";
+import {AxiosResponse} from "axios";
 
 const AddTask = () => {
-    // initialize the body to create the task variable
-    const initialTutorialState = {
-        id: 1111,
-        name: "",
-        discipline: "",
-        active: false,
-        date: "",
-    };
-    const [task, setTask] = useState<ITaskData>(initialTutorialState);
-
-    // to know if the user as clicked on submit or is still creating the task
-    const [active, setActive] = useState<boolean>(false);
-
     // boolean to set the discipline checkboxes
-    const [mathsDiscipline, setMathsDiscipline] = useState<boolean>(false);
-    const [physicsDiscipline, setPhysicDiscipline] = useState<boolean>(false);
+    const [selectedDiscipline, setSelectedDiscipline] = useState<Discipline | undefined>(undefined);
+    const [inputName, setInputName] = useState<string>("");
 
-    // date variable to save the time when the user click to save the task (and it helps to print the task at the good date)
-    const [date, setDate] = useState<Date>(null);
-
-
-    // event active when something is type in name input
-    const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
-        event.preventDefault();
-        const { name, value } = event.target;
-        setTask({ ...task, [name]: value });
-        setDate(new Date()); // more calculation than if it is only in the saveTutorial const but i have an error
-        // (date is null, time probably too short to save between the Data() function call and the post method)
-    };
+    const [taskSaved, setTaskSaved] = useState<boolean>(false);
 
     // post method to save the new task
-    const saveTutorial = () => {
-        setDate(new Date());
-        if(mathsDiscipline) {
-            task.discipline = "mathematics";
+    const submitTask = () => {
+        // early return
+        if (selectedDiscipline == null) {
+            console.error("L'utilisateur n'a pas sélectionné de discipline");
+            return;
         }
-        if(physicsDiscipline) {
-            task.discipline = "physics";
+        if (inputName === "") {
+            console.error("L'utilisateur n'a pas donné de nom à sa tâche");
+            return;
         }
-        if(task.name !== "" && task.discipline !== "") {
-            const data = {
-                id: task.id,
-                name: task.name,
-                discipline: task.discipline,
-                active: task.active,
-                date: date.toLocaleString(),
-            };
-            console.log(data);
 
-            TaskDataService.create(data)
-                .then((response: any) => {
-                    setTask({
-                        id: response.data.id,
-                        name: response.data.name,
-                        discipline: response.data.discipline,
-                        active: response.data.active,
-                        date: task.date,
-                    });
-                    setActive(true);
-                    console.log(response.data);
-                    console.log(response.config);
-                })
-                .catch((e: Error) => {
-                    console.log(e);
-                    console.log("erreureureur 1");
-                });}
+        const taskToSend: ITaskData = {
+            id: undefined,
+            name: inputName,
+            discipline: selectedDiscipline,
+            active: false,
+            date: new Date().toLocaleString(),
+        };
+
+        console.log(taskToSend);
+
+        TaskDataService.create(taskToSend)
+            .then((response: AxiosResponse) => {
+                console.debug(response);
+                setTaskSaved(true);
+            })
+            .catch((e: Error) => {
+                console.error(e);
+            });
     };
 
-
-    const newTutorial = () => {
-        setTask(initialTutorialState);
-        setActive(false);
+    const resetInputs = () => {
+        setTaskSaved(false);
+        setSelectedDiscipline(undefined);
+        setInputName("");
     };
 
-    return(
+    return (
         <div className="submit-form">
-            {active ? (
+            {taskSaved ? (
                 <div>
                     <h4>You submitted successfully!</h4>
                     <button
                         style={CSSConstants.buttonGeneralSettings}
                         className="btn btn-success"
-                        onClick={newTutorial}>
+                        onClick={resetInputs}
+                    >
                         Add
                     </button>
-
                 </div>
             ) : (
                 <div>
@@ -102,8 +73,8 @@ const AddTask = () => {
                             className="form-control"
                             id="name"
                             required
-                            value={task.name}
-                            onChange={handleInputChange}
+                            value={inputName}
+                            onChange={(event) => setInputName(event.target.value)}
                             name="name"
                         />
                     </div>
@@ -115,14 +86,14 @@ const AddTask = () => {
                         <input
                             id="physic-checkbox"
                             style={CSSConstants.inputGeneralSettings}
-                            type="checkbox"
+                            type="radio"
                             className="checkbox-control-physic"
-                            defaultChecked={physicsDiscipline}
-                            onClick={() => {
-                                setPhysicDiscipline(!physicsDiscipline);
-                            }}
                             name="physic-checkbox"
-                            disabled={mathsDiscipline}
+                            checked={selectedDiscipline === "physics"}
+                            onChange={() => {
+                                setSelectedDiscipline("physics");
+                            }}
+                            value={"physics"}
                         />
 
                         <label htmlFor="physic-checkbox">Physics</label>
@@ -130,31 +101,28 @@ const AddTask = () => {
                         <input
                             id="math-checkbox"
                             style={CSSConstants.inputGeneralSettings}
-                            type="checkbox"
+                            type="radio"
                             className="checkbox-control-maths"
-                            defaultChecked={mathsDiscipline}
-                            onClick={() => {
-                                setMathsDiscipline(!mathsDiscipline);
-                            }}
                             name="math-checkbox"
-                            disabled={physicsDiscipline}
+                            checked={selectedDiscipline === "mathematics"}
+                            onChange={() => {
+                                setSelectedDiscipline("mathematics");
+                            }}
+                            value={"mathematics"}
                         />
                         <label htmlFor="math-checkbox">Mathematics</label>
-
                     </div>
                     <button
                         style={CSSConstants.buttonGeneralSettings}
-                        onClick={saveTutorial}
-                        className="btn btn-success">
+                        onClick={submitTask}
+                        className="btn btn-success"
+                    >
                         Submit
                     </button>
                     <button>
-                        <Link to={"/tasks"}>
-                            Return back
-                        </Link>
+                        <Link to={"/tasks"}>Return back</Link>
                     </button>
                 </div>
-
             )}
         </div>
     );

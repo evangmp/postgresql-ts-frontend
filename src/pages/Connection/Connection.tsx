@@ -1,7 +1,7 @@
 import {Link} from "react-router-dom";
 import CSSConstants from "../../components/CSSConstant.tsx";
 import React, {ChangeEvent, useState} from "react";
-import IAccountData from "../../types/Account.tsx";
+import IAccountData from "../../types/Account.ts";
 
 const Connection = () => {
 

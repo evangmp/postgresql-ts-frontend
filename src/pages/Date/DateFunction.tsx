@@ -1,4 +1,4 @@
-import ITaskData from "../../types/Task.tsx";
+import ITaskData from "../../types/Task.ts";
 
 // to convert a full string date to a more compressed date
 const sortDate = (dateToSort: string) => {

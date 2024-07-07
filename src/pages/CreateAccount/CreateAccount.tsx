@@ -1,6 +1,6 @@
 import React, {ChangeEvent, useState} from "react";
 import CSSConstants from "../../components/CSSConstant.tsx";
-import IAccountData from "../../types/Account.tsx";
+import IAccountData from "../../types/Account.ts";
 import {Link} from "react-router-dom";
 
 const CreateAccount = () => {

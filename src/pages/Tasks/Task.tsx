@@ -1,11 +1,10 @@
 import {Link, useNavigate, useParams} from "react-router-dom";
 import React, {ChangeEvent, useEffect, useState} from "react";
-import ITaskData from "../../types/Task.tsx";
+import {ITaskData} from "../../types/Task.ts";
 import TaskDataService from "../../services/TaskService.tsx";
 import CSSConstants from "../../components/CSSConstant.tsx";
 
 const Task = () => {
-
     const { id }= useParams();
     const navigate = useNavigate();
 
@@ -19,7 +18,6 @@ const Task = () => {
 
     const [currentTask, setCurrentTask] = useState<ITaskData>(initialTaskState);
     const [message, setMessage] = useState<string>("");
-
 
     // get method to have the task
     const getTask = (id: string) => {
@@ -56,7 +54,6 @@ const Task = () => {
     // boolean to set the discipline checkboxes
     const [mathsDiscipline, setMathsDiscipline] = useState<boolean>(testDefineConst(currentTask.discipline, 0));
     const [physicsDiscipline, setPhysicDiscipline] = useState<boolean>(testDefineConst(currentTask.discipline, 1));
-
 
     const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
         event.preventDefault();

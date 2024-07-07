@@ -1,4 +1,4 @@
-import { routerType } from "../types/router.types";
+import { routerType } from "../types/router.types.ts";
 import Home from './Home/Home.tsx';
 import Connection from "./Connection/Connection.tsx";
 import CreateAccount from "./CreateAccount/CreateAccount.tsx";

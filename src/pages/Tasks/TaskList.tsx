@@ -1,5 +1,5 @@
 import React, {CSSProperties, useEffect, useState} from "react";
-import ITaskData from "../../types/Task.tsx";
+import ITaskData from "../../types/Task.ts";
 import TaskDataService from "../../services/TaskService.tsx";
 import CSSConstants from "../../components/CSSConstant.tsx";
 import {Link} from "react-router-dom";
